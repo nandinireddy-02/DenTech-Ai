@@ -145,11 +145,9 @@
                             <td>
                                 <div class="mini-confidence-meter" style="width: 60px; position: relative;">
                                     <div style="width: 100%; height: 8px; background: #e9ecef; border-radius: 4px; overflow: hidden;">
-                                        <div style="width: {{ patient[7] }}%; height: 100%; 
-                                                    background: {% if patient[7] >= 90 %}var(--dental-success)
-                                                               {% elif patient[7] >= 75 %}var(--dental-warning)
-                                                               {% else %}var(--dental-danger){% endif %}; 
-                                                    border-radius: 4px;"></div>
+                                        <div class="mini-confidence-fill"
+                                             data-confidence="{{ patient[7] }}"
+                                             style="height: 100%; border-radius: 4px;"></div>
                                     </div>
                                     <span style="font-size: 0.8rem; font-weight: 600; color: var(--dental-blue);">
                                         {{ "%.0f"|format(patient[7]) }}%
@@ -261,6 +259,20 @@
         // Animate table rows on load
         document.addEventListener('DOMContentLoaded', function() {
             const rows = document.querySelectorAll('tbody tr');
+            
+            // Set colors and widths for mini confidence meters
+            document.querySelectorAll('.mini-confidence-fill').forEach(fill => {
+                const confidence = parseFloat(fill.dataset.confidence);
+                fill.style.width = confidence + '%';
+                
+                if (confidence >= 90) {
+                    fill.style.background = 'var(--dental-success)';
+                } else if (confidence >= 75) {
+                    fill.style.background = 'var(--dental-warning)';
+                } else {
+                    fill.style.background = 'var(--dental-danger)';
+                }
+            });
             
             rows.forEach((row, index) => {
                 row.style.opacity = '0';

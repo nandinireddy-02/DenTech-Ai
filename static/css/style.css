@@ -342,6 +342,11 @@ body {
   transition: width 1s ease-in-out;
 }
 
+.mini-confidence-fill {
+  background: var(--dental-danger);
+  transition: background 0.3s ease;
+}
+
 /* Patient History Table */
 .history-table {
   width: 100%;

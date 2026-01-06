@@ -113,10 +113,7 @@
                     </div>
                     <div class="confidence-meter">
                         <div class="confidence-fill" 
-                             style="width: {{ patient[8] }}%; 
-                                    background: {% if patient[8] >= 90 %}var(--dental-success)
-                                               {% elif patient[8] >= 75 %}var(--dental-warning)
-                                               {% else %}var(--dental-danger){% endif %};">
+                             data-confidence="{{ patient[8] }}">
                         </div>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--dental-dark-gray); margin-top: 0.5rem;">
@@ -210,13 +207,22 @@
         // Animate confidence meter on load
         document.addEventListener('DOMContentLoaded', function() {
             const confidenceFill = document.querySelector('.confidence-fill');
-            const finalWidth = confidenceFill.style.width;
+            const confidence = parseFloat(confidenceFill.dataset.confidence);
+            
+            // Set color based on confidence level
+            if (confidence >= 90) {
+                confidenceFill.style.background = 'var(--dental-success)';
+            } else if (confidence >= 75) {
+                confidenceFill.style.background = 'var(--dental-warning)';
+            } else {
+                confidenceFill.style.background = 'var(--dental-danger)';
+            }
             
             // Start from 0 and animate to final value
             confidenceFill.style.width = '0%';
             
             setTimeout(() => {
-                confidenceFill.style.width = finalWidth;
+                confidenceFill.style.width = confidence + '%';
             }, 500);
         });
 
