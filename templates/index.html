@@ -3,124 +3,327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DenTech AI - Your Online Dental Friend</title>
+    <title>DenTech AI - Gorgeous Smile for a Brighter Life</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Floating Background Dental Elements -->
-    <div class="dental-background">
-        <div class="floating-tooth">🦷</div>
-        <div class="floating-tooth">🦷</div>
-        <div class="floating-tooth">🦷</div>
-        <div class="floating-tooth">🦷</div>
-        
-        <!-- Sparkle Effects -->
-        <div class="sparkle" style="top: 15%; left: 25%; animation-delay: 0s;"></div>
-        <div class="sparkle" style="top: 70%; left: 15%; animation-delay: 1s;"></div>
-        <div class="sparkle" style="top: 30%; left: 75%; animation-delay: 2s;"></div>
-        <div class="sparkle" style="top: 85%; left: 80%; animation-delay: 0.5s;"></div>
-    </div>
-
-    <div class="page-container">
-        <div class="glass-card homepage-hero">
-            <!-- Hero Title with Dental Emoji -->
-            <h1 class="hero-title">
-                DenTech AI 🦷
-            </h1>
-            
-            <p class="hero-subtitle">
-                Your Online Dental Friend
-            </p>
-            
-            <!-- 3D Rotating Tooth Animation -->
-            <div class="tooth-3d-container">
-                <div class="tooth-3d"></div>
+    <!-- Confident Style Navigation -->
+    <nav class="confident-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-text">DenTech AI</span>
             </div>
-            
-            <!-- SVG Tooth Drawing Animation -->
-            <div class="tooth-svg-animation">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <path class="tooth-outline" d="M50,15 
-                             C60,15 70,25 70,35 
-                             C70,45 65,55 60,65 
-                             C55,75 50,85 50,85 
-                             C50,85 45,75 40,65 
-                             C35,55 30,45 30,35 
-                             C30,25 40,15 50,15 Z" />
-                </svg>
+            <div class="nav-menu">
+                <a href="#" class="nav-link active">Home</a>
+                <a href="{{ url_for('patient_details') }}" class="nav-link">Analysis</a>
+                <a href="{{ url_for('patient_history') }}" class="nav-link">History</a>
+                <a href="#contact" class="nav-link">Contact</a>
             </div>
-            
-            <!-- AI Scan Animation -->
-            <div class="scanning-animation">
-                <div style="width: 100%; height: 100%; border: 2px solid var(--dental-blue); border-radius: 12px; position: relative;">
-                    <div class="scan-line"></div>
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem;">🦷</div>
-                </div>
+            <div class="nav-actions">
+                <a href="{{ url_for('patient_details') }}" class="nav-cta-btn">Book Analysis</a>
             </div>
-            
-            <!-- CTA Button -->
-            <a href="{{ url_for('patient_details') }}" class="btn btn-primary">
-                Start New Patient Analysis
-            </a>
-            
-            <!-- Secondary Actions -->
-            <div style="margin-top: 2rem;">
-                <a href="{{ url_for('patient_history') }}" class="btn btn-secondary" style="margin-right: 1rem;">
-                    View Patient History
-                </a>
-            </div>
-            
-            <!-- Medical Disclaimer -->
-            <div class="disclaimer">
-                <strong>Medical Disclaimer:</strong> DenTech AI is a decision-support tool for dental professionals. 
-                It does not replace professional dental diagnosis or treatment. Always consult with qualified dentists 
-                for proper medical advice and treatment decisions.
+            <div class="nav-toggle">
+                <i class="fas fa-bars"></i>
             </div>
         </div>
-    </div>
-    
-    <!-- Additional Background Animations -->
+    </nav>
+
+    <!-- Confident Style Hero Section -->
+    <section class="confident-hero">
+        <div class="hero-background">
+            <div class="hero-shape"></div>
+        </div>
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-main-title">
+                    Gorgeous Smile for a 
+                    <span class="hero-highlight">Brighter Life</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Advanced AI-powered dental diagnostics for precise hypodontia detection 
+                    and tooth discoloration analysis. Professional results you can trust.
+                </p>
+                <div class="hero-cta">
+                    <a href="{{ url_for('patient_details') }}" class="confident-btn-primary">
+                        Start Analysis
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-card-stack">
+                    <div class="hero-card-bg"></div>
+                    <div class="hero-card-main">
+                        <div class="tooth-illustration">
+                            <i class="fas fa-tooth"></i>
+                        </div>
+                        <div class="ai-analysis-display">
+                            <div class="analysis-item">
+                                <span class="analysis-label">Hypodontia Detection</span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" style="width: 95%"></div>
+                                </div>
+                                <span class="confidence-text">95%</span>
+                            </div>
+                            <div class="analysis-item">
+                                <span class="analysis-label">Discoloration Analysis</span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" style="width: 88%"></div>
+                                </div>
+                                <span class="confidence-text">88%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+        <div class="container">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h2 class="welcome-title">Hi, Welcome to <span class="brand-name">DenTech AI</span></h2>
+                    <div class="welcome-features">
+                        <div class="feature-item">
+                            <i class="fas fa-award"></i>
+                            <span>Professionalism & Attention Since 2024</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Preventive Care</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-brain"></i>
+                            <span>Modern AI Technology</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid Section -->
+    <section class="services-grid-section">
+        <div class="container">
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>HYPODONTIA DETECTION</h3>
+                    <p>Advanced AI algorithms for precise missing teeth pattern analysis</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>DISCOLORATION ANALYSIS</h3>
+                    <p>Professional tooth color assessment and treatment recommendations</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>INSTANT RESULTS</h3>
+                    <p>Get comprehensive diagnostic reports in seconds, not hours</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>PROGRESS TRACKING</h3>
+                    <p>Monitor dental health improvements over time</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h3>DETAILED ANALYSIS</h3>
+                    <p>Clinical-grade diagnostic accuracy for professional use</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3>PATIENT HISTORY</h3>
+                    <p>Complete record keeping and analysis history tracking</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Dedication Section -->
+    <section class="dedication-section">
+        <div class="container">
+            <div class="dedication-content">
+                <h2 class="dedication-title">
+                    We are Professionally Dedicated to Ensuring Your Oral Health 
+                    to Maintain a Healthy Smile
+                </h2>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Years in Services</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Total Analyses</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">AI Availability</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Confident Patients Section -->
+    <section class="testimonial-section">
+        <div class="container">
+            <div class="testimonial-header">
+                <h2 class="testimonial-title">1500+ Confident Patients Worldwide</h2>
+            </div>
+            <div class="testimonial-content">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        "Amazing experience! DenTech AI's analysis was incredibly accurate and detailed. 
+                        The AI technology made the diagnostic process so much faster and more reliable. 
+                        I'm very happy with the precision of the results."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-name">Dr. Sarah Mitchell</div>
+                        <div class="author-role">Advanced dental diagnostics</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 class="contact-title">Let's Get in Touch With Us</h2>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Advanced AI Diagnostics Center</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@dentechai.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="contact-cta">
+                    <a href="{{ url_for('patient_details') }}" class="confident-btn-primary large">
+                        Start Analysis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="confident-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <h3>Smile Bright, Live Better</h3>
+                    </div>
+                    <div class="footer-links">
+                        <a href="#">Home</a>
+                        <a href="{{ url_for('patient_details') }}">Analysis</a>
+                        <a href="{{ url_for('patient_history') }}">History</a>
+                        <a href="#contact">Contact</a>
+                    </div>
+                    <div class="footer-hours">
+                        <h4>Working Hours</h4>
+                        <p>Available 24/7<br>AI Analysis Always Ready</p>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="footer-disclaimer">
+                        <p><strong>Medical Disclaimer:</strong> This AI tool assists dental professionals in analysis. Always consult qualified dentists for diagnosis and treatment decisions.</p>
+                    </div>
+                    <div class="footer-copyright">
+                        <p>Copyright © DenTech AI 2026 | Powered by Advanced AI Technology</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // Add dynamic sparkle effects
-        function createSparkle() {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'sparkle';
-            sparkle.style.left = Math.random() * 100 + 'vw';
-            sparkle.style.top = Math.random() * 100 + 'vh';
-            sparkle.style.animationDelay = Math.random() * 2 + 's';
+        // Smooth scrolling and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Mobile menu toggle
+            const navToggle = document.querySelector('.nav-toggle');
+            const navMenu = document.querySelector('.nav-menu');
             
-            document.querySelector('.dental-background').appendChild(sparkle);
-            
-            // Remove sparkle after animation
-            setTimeout(() => {
-                if (sparkle.parentNode) {
-                    sparkle.parentNode.removeChild(sparkle);
-                }
-            }, 2000);
-        }
-        
-        // Create sparkles periodically
-        setInterval(createSparkle, 3000);
-        
-        // Add hover effects to the main card
-        const heroCard = document.querySelector('.homepage-hero');
-        heroCard.addEventListener('mousemove', (e) => {
-            const rect = heroCard.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            
-            heroCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-        });
-        
-        heroCard.addEventListener('mouseleave', () => {
-            heroCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            // Floating animations
+            const floatingElements = document.querySelectorAll('.floating-element');
+            floatingElements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.5}s`;
+            });
+
+            // Progress bar animations
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const progressBars = entry.target.querySelectorAll('.progress');
+                        progressBars.forEach(bar => {
+                            bar.style.width = bar.parentElement.style.getPropertyValue('--width');
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            const heroVisual = document.querySelector('.hero-visual');
+            if (heroVisual) {
+                observer.observe(heroVisual);
+            }
         });
     </script>
 </body>

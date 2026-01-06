@@ -8,22 +8,32 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
 </head>
 <body>
-    <!-- Floating Background Dental Elements -->
-    <div class="dental-background">
-        <div class="floating-tooth">🦷</div>
-        <div class="floating-tooth">🦷</div>
-        <div class="floating-tooth">🦷</div>
-        <div class="floating-tooth">🦷</div>
-    </div>
+    <!-- Clean Navigation Header -->
+    <nav class="clean-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon"></div>
+                <span class="brand-text">DenTech AI</span>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link">HOME</a>
+                <a href="{{ url_for('patient_details') }}" class="nav-link active">ANALYSIS</a>
+                <a href="{{ url_for('patient_history') }}" class="nav-link">HISTORY</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Professional Background -->
+    <div class="professional-background"></div>
 
     <div class="page-container">
-        <div class="glass-card form-container">
+        <div class="professional-card form-container">
             <!-- Header -->
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h1 style="color: var(--dental-blue); margin-bottom: 0.5rem;">
-                    📷 Dental Image Analysis
+            <div style="text-align: center; margin-bottom: 2rem; border-bottom: 1px solid #e9ecef; padding-bottom: 1.5rem;">
+                <h1 style="color: var(--dental-blue); margin-bottom: 0.5rem; font-size: 1.8rem; font-weight: 600;">
+                    Image Analysis
                 </h1>
-                <p style="color: var(--dental-dark-gray);">
+                <p style="color: var(--dental-dark-gray); font-size: 0.95rem;">
                     Upload dental image and select analysis type
                 </p>
             </div>
@@ -134,24 +144,15 @@
                 </div>
             </form>
 
-            <!-- AI Analysis Modal -->
             <div id="analysisModal" style="display: none;">
                 <div class="ai-analysis">
-                    <div class="tooth-3d-container" style="margin: 2rem auto;">
-                        <div class="tooth-3d"></div>
-                    </div>
-                    <h2>AI Analysis in Progress...</h2>
-                    <p>Analyzing your dental image using advanced AI algorithms</p>
+                    <div class="loading-spinner"></div>
+                    <h2>Analyzing Image...</h2>
+                    <p>Processing your dental image with AI</p>
                     <div class="ai-dots">
                         <div class="ai-dot"></div>
                         <div class="ai-dot"></div>
                         <div class="ai-dot"></div>
-                    </div>
-                    <div class="scanning-animation" style="margin: 2rem auto;">
-                        <div style="width: 100%; height: 100%; border: 2px solid var(--dental-blue); border-radius: 12px; position: relative;">
-                            <div class="scan-line"></div>
-                            <img id="analysisImage" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
-                        </div>
                     </div>
                 </div>
             </div>
