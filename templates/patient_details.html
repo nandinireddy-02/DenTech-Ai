@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Details - DenTech AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+</head>
+<body>
+    <!-- Floating Background Dental Elements -->
+    <div class="dental-background">
+        <div class="floating-tooth">🦷</div>
+        <div class="floating-tooth">🦷</div>
+        <div class="floating-tooth">🦷</div>
+        <div class="floating-tooth">🦷</div>
+    </div>
+
+    <div class="page-container">
+        <div class="glass-card form-container">
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="color: var(--dental-blue); margin-bottom: 0.5rem;">
+                    🦷 Patient Details
+                </h1>
+                <p style="color: var(--dental-dark-gray);">
+                    Please enter patient information before proceeding with dental analysis
+                </p>
+            </div>
+
+            <form id="patientForm">
+                <!-- Patient ID (Auto-generated) -->
+                <div class="form-group">
+                    <label class="form-label" for="patient_id">
+                        Patient ID
+                        <span style="color: var(--dental-teal); font-size: 0.9em;">(Auto-generated)</span>
+                    </label>
+                    <input type="text" class="form-control" id="patient_id" name="patient_id" 
+                           readonly style="background-color: #f8f9fa;">
+                    <button type="button" id="generateIdBtn" class="btn btn-secondary" 
+                            style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+                        Generate New ID
+                    </button>
+                </div>
+
+                <!-- Patient Name -->
+                <div class="form-group">
+                    <label class="form-label" for="name">
+                        Patient Name <span style="color: red;">*</span>
+                    </label>
+                    <input type="text" class="form-control" id="name" name="name" 
+                           required placeholder="Enter patient's full name">
+                </div>
+
+                <!-- Age -->
+                <div class="form-group">
+                    <label class="form-label" for="age">
+                        Age <span style="color: red;">*</span>
+                    </label>
+                    <input type="number" class="form-control" id="age" name="age" 
+                           required min="1" max="120" placeholder="Enter age">
+                </div>
+
+                <!-- Gender -->
+                <div class="form-group">
+                    <label class="form-label" for="gender">
+                        Gender <span style="color: red;">*</span>
+                    </label>
+                    <select class="form-control form-select" id="gender" name="gender" required>
+                        <option value="">Select gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <!-- Visit Date -->
+                <div class="form-group">
+                    <label class="form-label" for="visit_date">
+                        Visit Date <span style="color: red;">*</span>
+                    </label>
+                    <input type="date" class="form-control" id="visit_date" name="visit_date" required>
+                </div>
+
+                <!-- Notes (Optional) -->
+                <div class="form-group">
+                    <label class="form-label" for="notes">
+                        Notes <span style="color: var(--dental-dark-gray); font-weight: normal;">(Optional)</span>
+                    </label>
+                    <textarea class="form-control" id="notes" name="notes" rows="4" 
+                              placeholder="Additional notes about the patient or visit..."></textarea>
+                </div>
+
+                <!-- Form Actions -->
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary" style="flex: 1;">
+                        ← Back to Home
+                    </a>
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">
+                        Continue to Image Upload →
+                    </button>
+                </div>
+            </form>
+
+            <!-- Form Validation Info -->
+            <div class="disclaimer" style="margin-top: 2rem;">
+                <strong>Information Security:</strong> All patient information is stored securely and 
+                in compliance with healthcare data protection standards. Patient privacy is our top priority.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-generate patient ID on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            generatePatientId();
+            
+            // Set today's date as default visit date
+            const today = new Date();
+            const todayString = today.toISOString().split('T')[0];
+            document.getElementById('visit_date').value = todayString;
+        });
+
+        // Generate new patient ID
+        document.getElementById('generateIdBtn').addEventListener('click', generatePatientId);
+
+        async function generatePatientId() {
+            try {
+                const response = await fetch('/api/generate-patient-id');
+                const data = await response.json();
+                document.getElementById('patient_id').value = data.patient_id;
+            } catch (error) {
+                console.error('Error generating patient ID:', error);
+                // Fallback to client-side generation
+                const timestamp = new Date().toISOString().replace(/[-:T]/g, '').substring(0, 14);
+                const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                document.getElementById('patient_id').value = `DT${timestamp}${random}`;
+            }
+        }
+
+        // Form submission handler
+        document.getElementById('patientForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!this.checkValidity()) {
+                this.reportValidity();
+                return;
+            }
+
+            // Collect form data
+            const formData = new FormData(this);
+            const params = new URLSearchParams();
+            
+            for (let [key, value] of formData.entries()) {
+                params.append(key, value);
+            }
+
+            // Redirect to upload page with patient data
+            window.location.href = '/upload?' + params.toString();
+        });
+
+        // Real-time form validation feedback
+        const requiredFields = ['name', 'age', 'gender', 'visit_date'];
+        
+        requiredFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            field.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.style.borderColor = 'var(--dental-success)';
+                } else {
+                    this.style.borderColor = '#e9ecef';
+                }
+            });
+        });
+
+        // Age validation
+        document.getElementById('age').addEventListener('input', function() {
+            const age = parseInt(this.value);
+            if (age < 1 || age > 120) {
+                this.style.borderColor = 'var(--dental-danger)';
+            } else if (this.value.trim()) {
+                this.style.borderColor = 'var(--dental-success)';
+            }
+        });
+
+        // Enhanced form interactions
+        const formCard = document.querySelector('.glass-card');
+        
+        // Add focus effects to form fields
+        document.querySelectorAll('.form-control').forEach(field => {
+            field.addEventListener('focus', function() {
+                this.parentNode.style.transform = 'translateY(-2px)';
+                this.parentNode.style.transition = 'all 0.3s ease';
+            });
+            
+            field.addEventListener('blur', function() {
+                this.parentNode.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

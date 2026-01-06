@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DenTech AI - Your Online Dental Friend</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+</head>
+<body>
+    <!-- Floating Background Dental Elements -->
+    <div class="dental-background">
+        <div class="floating-tooth">🦷</div>
+        <div class="floating-tooth">🦷</div>
+        <div class="floating-tooth">🦷</div>
+        <div class="floating-tooth">🦷</div>
+        
+        <!-- Sparkle Effects -->
+        <div class="sparkle" style="top: 15%; left: 25%; animation-delay: 0s;"></div>
+        <div class="sparkle" style="top: 70%; left: 15%; animation-delay: 1s;"></div>
+        <div class="sparkle" style="top: 30%; left: 75%; animation-delay: 2s;"></div>
+        <div class="sparkle" style="top: 85%; left: 80%; animation-delay: 0.5s;"></div>
+    </div>
+
+    <div class="page-container">
+        <div class="glass-card homepage-hero">
+            <!-- Hero Title with Dental Emoji -->
+            <h1 class="hero-title">
+                DenTech AI 🦷
+            </h1>
+            
+            <p class="hero-subtitle">
+                Your Online Dental Friend
+            </p>
+            
+            <!-- 3D Rotating Tooth Animation -->
+            <div class="tooth-3d-container">
+                <div class="tooth-3d"></div>
+            </div>
+            
+            <!-- SVG Tooth Drawing Animation -->
+            <div class="tooth-svg-animation">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path class="tooth-outline" d="M50,15 
+                             C60,15 70,25 70,35 
+                             C70,45 65,55 60,65 
+                             C55,75 50,85 50,85 
+                             C50,85 45,75 40,65 
+                             C35,55 30,45 30,35 
+                             C30,25 40,15 50,15 Z" />
+                </svg>
+            </div>
+            
+            <!-- AI Scan Animation -->
+            <div class="scanning-animation">
+                <div style="width: 100%; height: 100%; border: 2px solid var(--dental-blue); border-radius: 12px; position: relative;">
+                    <div class="scan-line"></div>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem;">🦷</div>
+                </div>
+            </div>
+            
+            <!-- CTA Button -->
+            <a href="{{ url_for('patient_details') }}" class="btn btn-primary">
+                Start New Patient Analysis
+            </a>
+            
+            <!-- Secondary Actions -->
+            <div style="margin-top: 2rem;">
+                <a href="{{ url_for('patient_history') }}" class="btn btn-secondary" style="margin-right: 1rem;">
+                    View Patient History
+                </a>
+            </div>
+            
+            <!-- Medical Disclaimer -->
+            <div class="disclaimer">
+                <strong>Medical Disclaimer:</strong> DenTech AI is a decision-support tool for dental professionals. 
+                It does not replace professional dental diagnosis or treatment. Always consult with qualified dentists 
+                for proper medical advice and treatment decisions.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional Background Animations -->
+    <script>
+        // Add dynamic sparkle effects
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = Math.random() * 100 + 'vw';
+            sparkle.style.top = Math.random() * 100 + 'vh';
+            sparkle.style.animationDelay = Math.random() * 2 + 's';
+            
+            document.querySelector('.dental-background').appendChild(sparkle);
+            
+            // Remove sparkle after animation
+            setTimeout(() => {
+                if (sparkle.parentNode) {
+                    sparkle.parentNode.removeChild(sparkle);
+                }
+            }, 2000);
+        }
+        
+        // Create sparkles periodically
+        setInterval(createSparkle, 3000);
+        
+        // Add hover effects to the main card
+        const heroCard = document.querySelector('.homepage-hero');
+        heroCard.addEventListener('mousemove', (e) => {
+            const rect = heroCard.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            heroCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+        });
+        
+        heroCard.addEventListener('mouseleave', () => {
+            heroCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+        });
+    </script>
+</body>
+</html>

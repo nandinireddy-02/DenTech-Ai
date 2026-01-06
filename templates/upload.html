@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload & Analysis - DenTech AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+</head>
+<body>
+    <!-- Floating Background Dental Elements -->
+    <div class="dental-background">
+        <div class="floating-tooth">🦷</div>
+        <div class="floating-tooth">🦷</div>
+        <div class="floating-tooth">🦷</div>
+        <div class="floating-tooth">🦷</div>
+    </div>
+
+    <div class="page-container">
+        <div class="glass-card form-container">
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="color: var(--dental-blue); margin-bottom: 0.5rem;">
+                    📷 Dental Image Analysis
+                </h1>
+                <p style="color: var(--dental-dark-gray);">
+                    Upload dental image and select analysis type
+                </p>
+            </div>
+
+            <!-- Patient Info Summary -->
+            <div class="neumorphic-card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="color: var(--dental-blue); margin-bottom: 1rem;">Patient Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div>
+                        <strong>Patient ID:</strong> <span id="display-patient-id">{{ patient_data.patient_id or 'N/A' }}</span>
+                    </div>
+                    <div>
+                        <strong>Name:</strong> <span id="display-name">{{ patient_data.name or 'N/A' }}</span>
+                    </div>
+                    <div>
+                        <strong>Age:</strong> <span id="display-age">{{ patient_data.age or 'N/A' }}</span>
+                    </div>
+                    <div>
+                        <strong>Gender:</strong> <span id="display-gender">{{ patient_data.gender or 'N/A' }}</span>
+                    </div>
+                    <div>
+                        <strong>Visit Date:</strong> <span id="display-visit-date">{{ patient_data.visit_date or 'N/A' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                <!-- Hidden patient data fields -->
+                <input type="hidden" name="patient_id" value="{{ patient_data.patient_id }}">
+                <input type="hidden" name="name" value="{{ patient_data.name }}">
+                <input type="hidden" name="age" value="{{ patient_data.age }}">
+                <input type="hidden" name="gender" value="{{ patient_data.gender }}">
+                <input type="hidden" name="visit_date" value="{{ patient_data.visit_date }}">
+                <input type="hidden" name="notes" value="{{ patient_data.notes }}">
+
+                <!-- Analysis Type Selection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Analysis Type <span style="color: red;">*</span>
+                    </label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div class="analysis-option" data-type="hypodontia">
+                            <input type="radio" id="hypodontia" name="condition_type" value="hypodontia" required style="display: none;">
+                            <label for="hypodontia" class="analysis-card">
+                                <div class="analysis-icon">🦴</div>
+                                <h3>Hypodontia Detection</h3>
+                                <p>Analyze X-ray images to detect missing or underdeveloped teeth</p>
+                                <span class="recommended-format">Recommended: X-ray images (PNG, JPG)</span>
+                            </label>
+                        </div>
+                        
+                        <div class="analysis-option" data-type="discoloration">
+                            <input type="radio" id="discoloration" name="condition_type" value="discoloration" required style="display: none;">
+                            <label for="discoloration" class="analysis-card">
+                                <div class="analysis-icon">🦷</div>
+                                <h3>Tooth Discoloration</h3>
+                                <p>Analyze tooth photographs to detect discoloration patterns</p>
+                                <span class="recommended-format">Recommended: Clear tooth photos (PNG, JPG)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Upload Area -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Dental Image <span style="color: red;">*</span>
+                    </label>
+                    <div class="upload-area" id="uploadArea">
+                        <div id="uploadPrompt">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+                            <h3>Drop your dental image here</h3>
+                            <p>or click to browse files</p>
+                            <p style="font-size: 0.9rem; color: var(--dental-dark-gray); margin-top: 1rem;">
+                                Supported formats: PNG, JPG, JPEG, GIF<br>
+                                Maximum file size: 10MB
+                            </p>
+                        </div>
+                        <input type="file" id="dental_image" name="dental_image" 
+                               accept="image/*" required style="display: none;">
+                    </div>
+                    
+                    <!-- Image Preview -->
+                    <div id="imagePreview" style="display: none; margin-top: 1rem;">
+                        <div class="image-preview-container" style="position: relative; max-width: 400px; margin: 0 auto;">
+                            <img id="previewImage" style="width: 100%; border-radius: 12px; box-shadow: var(--shadow-soft);">
+                            <button type="button" id="removeImage" 
+                                    style="position: absolute; top: 10px; right: 10px; background: var(--dental-danger); 
+                                           color: white; border: none; border-radius: 50%; width: 30px; height: 30px; 
+                                           cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                ✕
+                            </button>
+                        </div>
+                        <p style="text-align: center; margin-top: 1rem; color: var(--dental-dark-gray);">
+                            <span id="fileName"></span> (<span id="fileSize"></span>)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <a href="{{ url_for('patient_details') }}" class="btn btn-secondary" style="flex: 1;">
+                        ← Back to Patient Details
+                    </a>
+                    <button type="submit" class="btn btn-primary" style="flex: 2;" id="analyzeBtn" disabled>
+                        🔬 Analyze Image
+                    </button>
+                </div>
+            </form>
+
+            <!-- AI Analysis Modal -->
+            <div id="analysisModal" style="display: none;">
+                <div class="ai-analysis">
+                    <div class="tooth-3d-container" style="margin: 2rem auto;">
+                        <div class="tooth-3d"></div>
+                    </div>
+                    <h2>AI Analysis in Progress...</h2>
+                    <p>Analyzing your dental image using advanced AI algorithms</p>
+                    <div class="ai-dots">
+                        <div class="ai-dot"></div>
+                        <div class="ai-dot"></div>
+                        <div class="ai-dot"></div>
+                    </div>
+                    <div class="scanning-animation" style="margin: 2rem auto;">
+                        <div style="width: 100%; height: 100%; border: 2px solid var(--dental-blue); border-radius: 12px; position: relative;">
+                            <div class="scan-line"></div>
+                            <img id="analysisImage" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('dental_image');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const analysisModal = document.getElementById('analysisModal');
+
+        // Populate patient data from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientData = {};
+        
+        ['patient_id', 'name', 'age', 'gender', 'visit_date', 'notes'].forEach(field => {
+            const value = urlParams.get(field);
+            if (value) {
+                patientData[field] = value;
+                const displayElement = document.getElementById(`display-${field.replace('_', '-')}`);
+                if (displayElement) {
+                    displayElement.textContent = value;
+                }
+                const hiddenInput = document.querySelector(`input[name="${field}"]`);
+                if (hiddenInput) {
+                    hiddenInput.value = value;
+                }
+            }
+        });
+
+        // File upload handling
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFile(e.dataTransfer.files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFile(e.target.files[0]);
+        });
+
+        function handleFile(file) {
+            if (!file) return;
+
+            // Validate file type
+            const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please upload a valid image file (PNG, JPG, JPEG, or GIF)');
+                return;
+            }
+
+            // Validate file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size must be less than 10MB');
+                return;
+            }
+
+            // Update file input
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            fileInput.files = dt.files;
+
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileSize').textContent = formatFileSize(file.size);
+                
+                uploadPrompt.style.display = 'none';
+                imagePreview.style.display = 'block';
+                
+                checkFormValidity();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Remove image
+        document.getElementById('removeImage').addEventListener('click', () => {
+            fileInput.value = '';
+            uploadPrompt.style.display = 'block';
+            imagePreview.style.display = 'none';
+            checkFormValidity();
+        });
+
+        // Analysis type selection
+        document.querySelectorAll('.analysis-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove active class from all options
+                document.querySelectorAll('.analysis-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+                
+                // Add active class to selected option
+                const card = option.querySelector('.analysis-card');
+                card.classList.add('active');
+                
+                // Check the radio button
+                const radio = option.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                checkFormValidity();
+            });
+        });
+
+        function checkFormValidity() {
+            const analysisSelected = document.querySelector('input[name="condition_type"]:checked');
+            const imageSelected = fileInput.files.length > 0;
+            
+            analyzeBtn.disabled = !(analysisSelected && imageSelected);
+        }
+
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show analysis modal
+            analysisModal.style.display = 'block';
+            document.getElementById('analysisImage').src = previewImage.src;
+            
+            // Submit form after showing animation
+            setTimeout(() => {
+                this.submit();
+            }, 1000);
+        });
+
+        // Utility functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+
+    <style>
+        .analysis-card {
+            display: block;
+            padding: 1.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .analysis-card:hover {
+            border-color: var(--dental-blue);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .analysis-card.active {
+            border-color: var(--dental-blue);
+            background: var(--dental-light-blue);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .analysis-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .analysis-card h3 {
+            color: var(--dental-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .analysis-card p {
+            color: var(--dental-dark-gray);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .recommended-format {
+            font-size: 0.8rem;
+            color: var(--dental-teal);
+            font-weight: 500;
+        }
+
+        #analysisModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</body>
+</html>
