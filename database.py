@@ -79,6 +79,18 @@ class DenTechDatabase:
         conn.close()
         return patient
     
+    def get_next_patient_number(self):
+        """Get the next patient serial number"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT COUNT(*) FROM patients')
+        count = cursor.fetchone()[0]
+        conn.close()
+        
+        # Return next number (count + 1) with leading zeros
+        return f"{count + 1:04d}"
+    
     def search_patients(self, search_term):
         """Search patients by name or patient ID"""
         conn = self.get_connection()

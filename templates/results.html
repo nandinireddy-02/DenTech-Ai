@@ -1,271 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis Results - DenTech AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analysis Results – DenTech AI</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Clean Navigation Header -->
-    <nav class="clean-nav">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <div class="brand-icon"></div>
-                <span class="brand-text">DenTech AI</span>
-            </div>
-            <div class="nav-links">
-                <a href="{{ url_for('index') }}" class="nav-link">HOME</a>
-                <a href="{{ url_for('patient_details') }}" class="nav-link">ANALYSIS</a>
-                <a href="{{ url_for('patient_history') }}" class="nav-link">HISTORY</a>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Professional Background -->
-    <div class="professional-background"></div>
-
-    <div class="container">
-        <!-- Header -->
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <h1 style="color: var(--dental-blue); margin-bottom: 0.5rem; font-size: 2rem; font-weight: 600;">
-                Analysis Results
-            </h1>
-            <p style="color: var(--dental-dark-gray);">
-                AI analysis completed for {{ patient[1] }}
-            </p>
-        </div>
-
-        <!-- Patient Summary Card -->
-        <div class="neumorphic-card" style="padding: 2rem; margin-bottom: 3rem;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; align-items: center;">
-                <div>
-                    <h3 style="color: var(--dental-blue); margin-bottom: 1rem;">Patient Information</h3>
-                    <div style="display: grid; gap: 0.5rem; font-size: 0.95rem;">
-                        <div><strong>Patient ID:</strong> {{ patient[0] }}</div>
-                        <div><strong>Name:</strong> {{ patient[1] }}</div>
-                        <div><strong>Age:</strong> {{ patient[2] }} years</div>
-                        <div><strong>Gender:</strong> {{ patient[3] }}</div>
-                        <div><strong>Visit Date:</strong> {{ patient[4] }}</div>
-                    </div>
-                </div>
-                
-                <div style="text-align: center;">
-                    <div class="tooth-3d-container" style="width: 80px; height: 80px; margin: 0 auto;">
-                        <div class="tooth-3d"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Analysis Results -->
-        <div class="result-container">
-            <!-- Uploaded Image -->
-            <div class="professional-card" style="padding: 2rem;">
-                <h3 style="color: var(--dental-blue); margin-bottom: 1.5rem; text-align: center; font-weight: 600;">
-                    Uploaded Image
-                </h3>
-                <div class="image-preview">
-                    <img src="{{ url_for('static', filename='../uploads/' + patient[9]) }}" 
-                         alt="Uploaded dental image" 
-                         style="width: 100%; height: auto; border-radius: 12px; box-shadow: var(--shadow-soft);">
-                </div>
-                
-                <!-- Image Analysis Info -->
-                <div style="margin-top: 1.5rem; padding: 1rem; background: var(--dental-light-blue); border-radius: 8px;">
-                    <div style="display: grid; gap: 0.5rem; font-size: 0.9rem;">
-                        <div><strong>Analysis Type:</strong> 
-                            <span style="color: var(--dental-blue);">
-                                {% if patient[6] == 'hypodontia' %}
-                                    🦴 Hypodontia Detection
-                                {% else %}
-                                    🦷 Tooth Discoloration Analysis
-                                {% endif %}
-                            </span>
-                        </div>
-                        <div><strong>Processing Date:</strong> {{ patient[10].split()[0] if patient[10] else 'N/A' }}</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI Results -->
-            <div class="professional-card result-card" style="padding: 2rem;">
-                <h3 style="color: var(--dental-blue); margin-bottom: 1.5rem; text-align: center; font-weight: 600;">
-                    Analysis Results
-                </h3>
-
-                <!-- Result Status -->
-                <div style="text-align: center; margin-bottom: 2rem;">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">
-                        {% if 'No' in patient[7] or 'Normal' in patient[7] %}
-                            ✅
-                        {% elif 'Mild' in patient[7] %}
-                            ⚠️
-                        {% elif 'Moderate' in patient[7] %}
-                            🔶
-                        {% else %}
-                            🔴
-                        {% endif %}
-                    </div>
-                    <h2 style="color: var(--dental-blue); margin-bottom: 0.5rem;">
-                        {{ patient[7] }}
-                    </h2>
-                </div>
-
-                <!-- Confidence Meter -->
-                <div style="margin-bottom: 2rem;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span style="font-weight: 600; color: var(--dental-dark-gray);">Confidence Level</span>
-                        <span style="font-weight: 700; color: var(--dental-blue); font-size: 1.1rem;">
-                            {{ "%.1f"|format(patient[8]) }}%
-                        </span>
-                    </div>
-                    <div class="confidence-meter">
-                        <div class="confidence-fill" 
-                             data-confidence="{{ patient[8] }}">
-                        </div>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--dental-dark-gray); margin-top: 0.5rem;">
-                        <span>Low</span>
-                        <span>High</span>
-                    </div>
-                </div>
-
-                <!-- AI Explanation -->
-                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
-                    <h4 style="color: var(--dental-blue); margin-bottom: 1rem; display: flex; align-items: center;">
-                        🧠 AI Analysis Explanation
-                    </h4>
-                    <p style="line-height: 1.6; color: #333;">
-                        {% if patient[6] == 'hypodontia' %}
-                            {% if 'No' in patient[7] %}
-                                Normal tooth development pattern observed. All expected tooth structures are present in the X-ray image. No signs of missing or underdeveloped teeth detected.
-                            {% elif 'Mild' in patient[7] %}
-                                Missing 1-2 teeth detected through X-ray analysis. This is a common developmental variation that may require orthodontic consultation for optimal treatment planning.
-                            {% elif 'Moderate' in patient[7] %}
-                                Missing 3-5 teeth identified in the dental X-ray. Comprehensive treatment planning recommended with prosthodontic evaluation for potential replacement options.
-                            {% else %}
-                                Significant tooth absence detected. Multidisciplinary approach recommended involving orthodontics, prosthodontics, and possible implant consultation.
-                            {% endif %}
-                        {% else %}
-                            {% if 'No' in patient[7] %}
-                                Normal tooth coloration within healthy parameters detected. The analyzed teeth show no significant discoloration requiring immediate intervention.
-                            {% elif 'Mild' in patient[7] %}
-                                Surface-level discoloration detected through image analysis. Professional cleaning and whitening procedures may provide aesthetic improvement.
-                            {% elif 'Moderate' in patient[7] %}
-                                Noticeable discoloration patterns identified. Consider professional whitening treatment or cosmetic consultation to address aesthetic concerns.
-                            {% else %}
-                                Significant discoloration detected requiring professional evaluation. Comprehensive assessment recommended to determine underlying causes and treatment options.
-                            {% endif %}
-                        {% endif %}
-                    </p>
-                </div>
-
-                <!-- Recommendations -->
-                <div style="background: var(--dental-light-blue); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
-                    <h4 style="color: var(--dental-blue); margin-bottom: 1rem; display: flex; align-items: center;">
-                        💡 Clinical Recommendations
-                    </h4>
-                    <ul style="margin-left: 1.5rem; line-height: 1.8;">
-                        {% if 'No' in patient[7] or 'Normal' in patient[7] %}
-                            <li>Continue regular dental check-ups and maintenance</li>
-                            <li>Follow standard preventive care protocols</li>
-                            <li>Monitor for any future changes during routine visits</li>
-                        {% elif 'Mild' in patient[7] %}
-                            <li>Schedule consultation with appropriate specialist</li>
-                            <li>Consider treatment options and patient preferences</li>
-                            <li>Document findings in patient record for future reference</li>
-                        {% else %}
-                            <li>Immediate specialist consultation recommended</li>
-                            <li>Comprehensive treatment planning required</li>
-                            <li>Patient education regarding condition and options</li>
-                            <li>Follow-up scheduling for progress monitoring</li>
-                        {% endif %}
-                    </ul>
-                </div>
-
-                <!-- Action Buttons -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;">
-                    <a href="{{ url_for('patient_details') }}" class="btn btn-secondary" style="text-align: center;">
-                        👤 New Patient
-                    </a>
-                    <a href="{{ url_for('patient_history') }}" class="btn btn-primary" style="text-align: center;">
-                        📋 Patient History
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Medical Disclaimer -->
-        <div class="disclaimer" style="margin-top: 3rem;">
-            <strong>⚕️ Medical Disclaimer:</strong> This AI analysis is intended as a decision-support tool only. 
-            Results should be interpreted by qualified dental professionals and do not replace clinical examination, 
-            professional diagnosis, or treatment decisions. Always consult with licensed dentists for comprehensive 
-            patient care and treatment planning.
-        </div>
-
-        <!-- Download Report Option -->
-        <div style="text-align: center; margin: 2rem 0;">
-            <button class="btn btn-secondary" onclick="generateReport()">
-                📄 Generate PDF Report
-            </button>
-        </div>
+  <nav class="site-nav scrolled">
+    <div class="nav-inner">
+      <a href="{{ url_for('index') }}" class="nav-brand">
+        <div class="nav-brand-icon">🦷</div>
+        <span class="nav-brand-text">DenTech <span>AI</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="{{ url_for('index') }}"           class="nav-link">Home</a>
+        <a href="{{ url_for('patient_details') }}" class="nav-link">Analysis</a>
+        <a href="{{ url_for('patient_history') }}" class="nav-link">History</a>
+      </div>
     </div>
+  </nav>
 
-    <script>
-        // Animate confidence meter on load
-        document.addEventListener('DOMContentLoaded', function() {
-            const confidenceFill = document.querySelector('.confidence-fill');
-            const confidence = parseFloat(confidenceFill.dataset.confidence);
-            
-            // Set color based on confidence level
-            if (confidence >= 90) {
-                confidenceFill.style.background = 'var(--dental-success)';
-            } else if (confidence >= 75) {
-                confidenceFill.style.background = 'var(--dental-warning)';
-            } else {
-                confidenceFill.style.background = 'var(--dental-danger)';
-            }
-            
-            // Start from 0 and animate to final value
-            confidenceFill.style.width = '0%';
-            
-            setTimeout(() => {
-                confidenceFill.style.width = confidence + '%';
-            }, 500);
-        });
+  <div class="results-page">
+    <div class="container">
 
-        // Generate PDF Report (placeholder function)
-        function generateReport() {
-            alert('PDF report generation will be implemented in the next version. For now, you can print this page or save as PDF using your browser.');
-        }
+      <!-- Page Header -->
+      <div style="margin-bottom:1.5rem;" class="anim-fade-up anim-delay-1">
+        <span class="section-eyebrow">
+          <i class="fas fa-check-circle"></i> &nbsp;Step 3 of 3 — Complete
+        </span>
+        <h1 class="section-title" style="font-size:2.2rem;">Analysis Results</h1>
+        <p style="color:var(--text-secondary);margin-top:.35rem;">AI analysis completed for <strong style="color:var(--text-primary);">{{ patient[1] }}</strong></p>
+      </div>
 
-        // Add subtle animations to results
-        const resultCards = document.querySelectorAll('.glass-card');
-        
-        resultCards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            
-            setTimeout(() => {
-                card.style.transition = 'all 0.6s ease';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 200);
-        });
+      <!-- Step bar (all done) -->
+      <div class="steps anim-fade-up anim-delay-1" style="margin-bottom:2.5rem;">
+        <div class="step-item done"><div class="step-dot"><i class="fas fa-check" style="font-size:.6rem;"></i></div></div>
+        <div class="step-connector done"></div>
+        <div class="step-item done"><div class="step-dot"><i class="fas fa-check" style="font-size:.6rem;"></i></div></div>
+        <div class="step-connector done"></div>
+        <div class="step-item done"><div class="step-dot"><i class="fas fa-check" style="font-size:.6rem;"></i></div></div>
+      </div>
+      <div style="display:flex;gap:3.5rem;margin-bottom:2.5rem;font-size:.75rem;color:var(--success);font-weight:600;margin-top:-.5rem;" class="anim-fade-up anim-delay-1">
+        <span>Details</span><span>Upload</span><span>Results</span>
+      </div>
 
-        // Add hover effect to recommendation items
-        document.querySelectorAll('li').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateX(5px)';
-                this.style.transition = 'transform 0.3s ease';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateX(0)';
-            });
-        });
-    </script>
+      <div class="results-grid">
+
+        <!-- LEFT: Image + Patient Info -->
+        <div class="anim-fade-up anim-delay-2">
+          <div class="result-panel" style="margin-bottom:1.5rem;">
+            <h3 style="font-size:1rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:1.25rem;">
+              <i class="fas fa-image" style="color:var(--accent);margin-right:.5rem;"></i>Uploaded Image
+            </h3>
+            <img class="result-image"
+                 src="{{ url_for('static', filename='../uploads/' + patient[9]) }}"
+                 alt="Uploaded dental image">
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+              <span class="badge badge-accent">
+                {% if patient[6] == 'hypodontia' %}🦴 Hypodontia{% else %}🦷 Discoloration{% endif %}
+              </span>
+              <span style="font-size:.8rem;color:var(--text-muted);">
+                <i class="fas fa-calendar-alt"></i>
+                {{ patient[10].split()[0] if patient[10] else 'N/A' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="result-panel">
+            <h3 style="font-size:1rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:1.25rem;">
+              <i class="fas fa-user" style="color:var(--accent);margin-right:.5rem;"></i>Patient Information
+            </h3>
+            <div class="result-info-grid">
+              <div class="result-info-row">
+                <span class="result-info-key">Patient ID</span>
+                <span class="result-info-val" style="font-family:monospace;font-size:.82rem;">{{ patient[0] }}</span>
+              </div>
+              <div class="result-info-row">
+                <span class="result-info-key">Name</span>
+                <span class="result-info-val">{{ patient[1] }}</span>
+              </div>
+              <div class="result-info-row">
+                <span class="result-info-key">Age</span>
+                <span class="result-info-val">{{ patient[2] }} years</span>
+              </div>
+              <div class="result-info-row">
+                <span class="result-info-key">Gender</span>
+                <span class="result-info-val">{{ patient[3] }}</span>
+              </div>
+              <div class="result-info-row">
+                <span class="result-info-key">Visit Date</span>
+                <span class="result-info-val">{{ patient[4] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: AI Results -->
+        <div class="anim-fade-up anim-delay-3">
+          <div class="result-panel">
+
+            <!-- Status -->
+            <div class="result-status
+              {% if 'No' in patient[7] or 'Normal' in patient[7] %}
+                " style="background:var(--success-bg);border:1px solid rgba(34,211,160,.2);">
+              <span class="result-emoji">✅</span>
+              <div class="result-label" style="color:var(--success);">{{ patient[7] }}</div>
+            {% elif 'Mild' in patient[7] %}
+                " style="background:var(--warning-bg);border:1px solid rgba(245,158,11,.2);">
+              <span class="result-emoji">⚠️</span>
+              <div class="result-label" style="color:var(--warning);">{{ patient[7] }}</div>
+            {% elif 'Moderate' in patient[7] %}
+                " style="background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);">
+              <span class="result-emoji">🔶</span>
+              <div class="result-label" style="color:#fb923c;">{{ patient[7] }}</div>
+            {% else %}
+                " style="background:var(--danger-bg);border:1px solid rgba(239,68,68,.2);">
+              <span class="result-emoji">🔴</span>
+              <div class="result-label" style="color:var(--danger);">{{ patient[7] }}</div>
+            {% endif %}
+
+            <!-- Confidence -->
+            <div style="margin-top:1rem;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:.5rem;font-size:.82rem;">
+                <span style="color:var(--text-muted);font-weight:600;">AI Confidence</span>
+                <span style="font-weight:800;color:var(--accent);">{{ "%.1f"|format(patient[8]) }}%</span>
+              </div>
+              <div class="confidence-bar">
+                <div class="confidence-fill" id="confFill" data-val="{{ patient[8] }}"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">
+                <span>Low</span><span>High</span>
+              </div>
+            </div>
+
+            <!-- AI Explanation -->
+            <div class="ai-expl-box">
+              <h4><i class="fas fa-brain" style="margin-right:.5rem;"></i>AI Explanation</h4>
+              <p>
+                {% if patient[6] == 'hypodontia' %}
+                  {% if 'No' in patient[7] %}Normal tooth development pattern observed. All expected tooth structures are present in the X-ray image. No signs of missing or underdeveloped teeth detected.
+                  {% elif 'Mild' in patient[7] %}Missing 1–2 teeth detected through X-ray analysis. This is a common developmental variation that may require orthodontic consultation for optimal treatment planning.
+                  {% elif 'Moderate' in patient[7] %}Missing 3–5 teeth identified in the dental X-ray. Comprehensive treatment planning recommended with prosthodontic evaluation for potential replacement options.
+                  {% else %}Significant tooth absence detected. A multidisciplinary approach is recommended involving orthodontics, prosthodontics, and possible implant consultation.
+                  {% endif %}
+                {% else %}
+                  {% if 'No' in patient[7] %}Normal tooth coloration within healthy parameters detected. No significant discoloration requiring immediate intervention observed.
+                  {% elif 'Mild' in patient[7] %}Surface-level discoloration detected through image analysis. Professional cleaning and whitening procedures may provide aesthetic improvement.
+                  {% elif 'Moderate' in patient[7] %}Noticeable discoloration patterns identified. Consider professional whitening treatment or cosmetic consultation to address aesthetic concerns.
+                  {% else %}Significant discoloration detected requiring professional evaluation. Comprehensive assessment recommended to determine underlying causes and treatment options.
+                  {% endif %}
+                {% endif %}
+              </p>
+            </div>
+
+            <!-- Recommendations -->
+            <div>
+              <h4 style="font-size:.9rem;color:var(--text-primary);margin-bottom:.75rem;">
+                <i class="fas fa-lightbulb" style="color:var(--warning);margin-right:.5rem;"></i>Clinical Recommendations
+              </h4>
+              <ul class="reco-list">
+                {% if 'No' in patient[7] or 'Normal' in patient[7] %}
+                  <li>Continue regular dental check-ups and maintenance</li>
+                  <li>Follow standard preventive care protocols</li>
+                  <li>Monitor for any changes during routine visits</li>
+                {% elif 'Mild' in patient[7] %}
+                  <li>Schedule consultation with appropriate specialist</li>
+                  <li>Consider treatment options and patient preferences</li>
+                  <li>Document findings for future reference</li>
+                {% else %}
+                  <li>Immediate specialist consultation recommended</li>
+                  <li>Comprehensive treatment planning required</li>
+                  <li>Patient education regarding condition and options</li>
+                  <li>Follow-up scheduling for progress monitoring</li>
+                {% endif %}
+              </ul>
+            </div>
+
+            <!-- Actions -->
+            <div class="result-actions">
+              <a href="{{ url_for('patient_details') }}" class="btn btn-secondary">
+                <i class="fas fa-user-plus"></i> New Patient
+              </a>
+              <a href="{{ url_for('patient_history') }}" class="btn btn-primary">
+                <i class="fas fa-history"></i> View History
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer-box anim-fade-up">
+        <strong style="color:var(--warning);">⚕ Medical Disclaimer:</strong>
+        This AI analysis is intended as a decision-support tool only. Results should be interpreted by qualified dental professionals
+        and do not replace clinical examination, diagnosis, or treatment decisions.
+      </div>
+
+      <!-- PDF -->
+      <div style="text-align:center;margin-top:1.5rem;" class="anim-fade-up">
+        <button class="btn btn-secondary" onclick="window.print()">
+          <i class="fas fa-file-pdf"></i> Print / Save Report
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fill = document.getElementById('confFill');
+      if (!fill) return;
+      const val = parseFloat(fill.dataset.val || 0);
+      fill.style.background = val >= 90 ? 'var(--success)' : val >= 75 ? 'var(--warning)' : 'var(--danger)';
+      fill.style.width = '0%';
+      setTimeout(() => { fill.style.width = val + '%'; }, 400);
+    });
+  </script>
 </body>
 </html>

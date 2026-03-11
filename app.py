@@ -18,10 +18,10 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def generate_patient_id():
-    """Generate a unique patient ID"""
+    """Generate a unique patient ID with serial number"""
     timestamp = datetime.now().strftime("%Y%m%d")
-    random_digits = str(random.randint(1000, 9999))
-    return f"DT{timestamp}{random_digits}"
+    serial_number = db.get_next_patient_number()
+    return f"DT{timestamp}{serial_number}"
 
 def simulate_ai_analysis(image_path, condition_type):
     """
@@ -149,6 +149,22 @@ def patient_history():
 def api_generate_patient_id():
     """API endpoint to generate new patient ID"""
     return jsonify({'patient_id': generate_patient_id()})
+
+@app.route('/api/increment_stats', methods=['POST'])
+def increment_stats():
+    """API endpoint to increment analysis statistics"""
+    try:
+        # Here you could add database logging of the analysis
+        # For now, just return success
+        return jsonify({
+            'success': True,
+            'message': 'Stats updated'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 if __name__ == '__main__':
     # Ensure upload directory exists

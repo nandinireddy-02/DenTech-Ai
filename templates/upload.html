@@ -1,370 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload & Analysis - DenTech AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload & Analyse – DenTech AI</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Clean Navigation Header -->
-    <nav class="clean-nav">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <div class="brand-icon"></div>
-                <span class="brand-text">DenTech AI</span>
-            </div>
-            <div class="nav-links">
-                <a href="{{ url_for('index') }}" class="nav-link">HOME</a>
-                <a href="{{ url_for('patient_details') }}" class="nav-link active">ANALYSIS</a>
-                <a href="{{ url_for('patient_history') }}" class="nav-link">HISTORY</a>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Professional Background -->
-    <div class="professional-background"></div>
-
-    <div class="page-container">
-        <div class="professional-card form-container">
-            <!-- Header -->
-            <div style="text-align: center; margin-bottom: 2rem; border-bottom: 1px solid #e9ecef; padding-bottom: 1.5rem;">
-                <h1 style="color: var(--dental-blue); margin-bottom: 0.5rem; font-size: 1.8rem; font-weight: 600;">
-                    Image Analysis
-                </h1>
-                <p style="color: var(--dental-dark-gray); font-size: 0.95rem;">
-                    Upload dental image and select analysis type
-                </p>
-            </div>
-
-            <!-- Patient Info Summary -->
-            <div class="neumorphic-card" style="padding: 1.5rem; margin-bottom: 2rem;">
-                <h3 style="color: var(--dental-blue); margin-bottom: 1rem;">Patient Information</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                    <div>
-                        <strong>Patient ID:</strong> <span id="display-patient-id">{{ patient_data.patient_id or 'N/A' }}</span>
-                    </div>
-                    <div>
-                        <strong>Name:</strong> <span id="display-name">{{ patient_data.name or 'N/A' }}</span>
-                    </div>
-                    <div>
-                        <strong>Age:</strong> <span id="display-age">{{ patient_data.age or 'N/A' }}</span>
-                    </div>
-                    <div>
-                        <strong>Gender:</strong> <span id="display-gender">{{ patient_data.gender or 'N/A' }}</span>
-                    </div>
-                    <div>
-                        <strong>Visit Date:</strong> <span id="display-visit-date">{{ patient_data.visit_date or 'N/A' }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <form id="uploadForm" method="POST" enctype="multipart/form-data">
-                <!-- Hidden patient data fields -->
-                <input type="hidden" name="patient_id" value="{{ patient_data.patient_id }}">
-                <input type="hidden" name="name" value="{{ patient_data.name }}">
-                <input type="hidden" name="age" value="{{ patient_data.age }}">
-                <input type="hidden" name="gender" value="{{ patient_data.gender }}">
-                <input type="hidden" name="visit_date" value="{{ patient_data.visit_date }}">
-                <input type="hidden" name="notes" value="{{ patient_data.notes }}">
-
-                <!-- Analysis Type Selection -->
-                <div class="form-group">
-                    <label class="form-label">
-                        Analysis Type <span style="color: red;">*</span>
-                    </label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
-                        <div class="analysis-option" data-type="hypodontia">
-                            <input type="radio" id="hypodontia" name="condition_type" value="hypodontia" required style="display: none;">
-                            <label for="hypodontia" class="analysis-card">
-                                <div class="analysis-icon">🦴</div>
-                                <h3>Hypodontia Detection</h3>
-                                <p>Analyze X-ray images to detect missing or underdeveloped teeth</p>
-                                <span class="recommended-format">Recommended: X-ray images (PNG, JPG)</span>
-                            </label>
-                        </div>
-                        
-                        <div class="analysis-option" data-type="discoloration">
-                            <input type="radio" id="discoloration" name="condition_type" value="discoloration" required style="display: none;">
-                            <label for="discoloration" class="analysis-card">
-                                <div class="analysis-icon">🦷</div>
-                                <h3>Tooth Discoloration</h3>
-                                <p>Analyze tooth photographs to detect discoloration patterns</p>
-                                <span class="recommended-format">Recommended: Clear tooth photos (PNG, JPG)</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Image Upload Area -->
-                <div class="form-group">
-                    <label class="form-label">
-                        Dental Image <span style="color: red;">*</span>
-                    </label>
-                    <div class="upload-area" id="uploadArea">
-                        <div id="uploadPrompt">
-                            <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
-                            <h3>Drop your dental image here</h3>
-                            <p>or click to browse files</p>
-                            <p style="font-size: 0.9rem; color: var(--dental-dark-gray); margin-top: 1rem;">
-                                Supported formats: PNG, JPG, JPEG, GIF<br>
-                                Maximum file size: 10MB
-                            </p>
-                        </div>
-                        <input type="file" id="dental_image" name="dental_image" 
-                               accept="image/*" required style="display: none;">
-                    </div>
-                    
-                    <!-- Image Preview -->
-                    <div id="imagePreview" style="display: none; margin-top: 1rem;">
-                        <div class="image-preview-container" style="position: relative; max-width: 400px; margin: 0 auto;">
-                            <img id="previewImage" style="width: 100%; border-radius: 12px; box-shadow: var(--shadow-soft);">
-                            <button type="button" id="removeImage" 
-                                    style="position: absolute; top: 10px; right: 10px; background: var(--dental-danger); 
-                                           color: white; border: none; border-radius: 50%; width: 30px; height: 30px; 
-                                           cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                                ✕
-                            </button>
-                        </div>
-                        <p style="text-align: center; margin-top: 1rem; color: var(--dental-dark-gray);">
-                            <span id="fileName"></span> (<span id="fileSize"></span>)
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Form Actions -->
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <a href="{{ url_for('patient_details') }}" class="btn btn-secondary" style="flex: 1;">
-                        ← Back to Patient Details
-                    </a>
-                    <button type="submit" class="btn btn-primary" style="flex: 2;" id="analyzeBtn" disabled>
-                        🔬 Analyze Image
-                    </button>
-                </div>
-            </form>
-
-            <div id="analysisModal" style="display: none;">
-                <div class="ai-analysis">
-                    <div class="loading-spinner"></div>
-                    <h2>Analyzing Image...</h2>
-                    <p>Processing your dental image with AI</p>
-                    <div class="ai-dots">
-                        <div class="ai-dot"></div>
-                        <div class="ai-dot"></div>
-                        <div class="ai-dot"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <nav class="site-nav scrolled">
+    <div class="nav-inner">
+      <a href="{{ url_for('index') }}" class="nav-brand">
+        <div class="nav-brand-icon">🦷</div>
+        <span class="nav-brand-text">DenTech <span>AI</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="{{ url_for('index') }}"           class="nav-link">Home</a>
+        <a href="{{ url_for('patient_details') }}" class="nav-link active">Analysis</a>
+        <a href="{{ url_for('patient_history') }}" class="nav-link">History</a>
+      </div>
     </div>
+  </nav>
 
-    <script>
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('dental_image');
-        const imagePreview = document.getElementById('imagePreview');
-        const previewImage = document.getElementById('previewImage');
-        const uploadPrompt = document.getElementById('uploadPrompt');
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const analysisModal = document.getElementById('analysisModal');
+  <div class="upload-page">
+    <div class="container">
 
-        // Populate patient data from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const patientData = {};
-        
-        ['patient_id', 'name', 'age', 'gender', 'visit_date', 'notes'].forEach(field => {
-            const value = urlParams.get(field);
-            if (value) {
-                patientData[field] = value;
-                const displayElement = document.getElementById(`display-${field.replace('_', '-')}`);
-                if (displayElement) {
-                    displayElement.textContent = value;
-                }
-                const hiddenInput = document.querySelector(`input[name="${field}"]`);
-                if (hiddenInput) {
-                    hiddenInput.value = value;
-                }
-            }
-        });
+      <!-- Header -->
+      <div class="form-header-block anim-fade-up anim-delay-1">
+        <span class="section-eyebrow"><i class="fas fa-upload"></i> &nbsp;Step 2 of 3</span>
+        <h1 class="section-title" style="font-size:2.2rem;">Image Upload &amp; Analysis</h1>
+        <p class="section-sub" style="font-size:.95rem;">Select analysis type and upload your dental image</p>
+        <div class="steps" style="justify-content:center;margin-top:1.5rem;">
+          <div class="step-item done"><div class="step-dot"><i class="fas fa-check" style="font-size:.6rem;"></i></div></div>
+          <div class="step-connector done"></div>
+          <div class="step-item active"><div class="step-dot">2</div></div>
+          <div class="step-connector active"></div>
+          <div class="step-item"><div class="step-dot">3</div></div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:3.5rem;margin-top:.5rem;font-size:.75rem;color:var(--text-muted);">
+          <span style="color:var(--success);font-weight:600;">Details</span>
+          <span style="color:var(--accent);font-weight:600;">Upload</span>
+          <span>Results</span>
+        </div>
+      </div>
 
-        // File upload handling
-        uploadArea.addEventListener('click', () => fileInput.click());
+      <!-- Card -->
+      <div class="upload-card anim-fade-up anim-delay-2">
 
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
+        <!-- Patient Summary -->
+        <div class="patient-summary-strip">
+          <div><strong>ID:</strong> <span id="disp-id">{{ patient_data.patient_id or 'N/A' }}</span></div>
+          <div><strong>Name:</strong> <span id="disp-name">{{ patient_data.name or 'N/A' }}</span></div>
+          <div><strong>Age:</strong> <span id="disp-age">{{ patient_data.age or 'N/A' }}</span></div>
+          <div><strong>Gender:</strong> <span id="disp-gender">{{ patient_data.gender or 'N/A' }}</span></div>
+          <div><strong>Visit:</strong> <span id="disp-date">{{ patient_data.visit_date or 'N/A' }}</span></div>
+        </div>
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
+        <form id="uploadForm" method="POST" enctype="multipart/form-data">
+          <!-- Hidden patient fields -->
+          <input type="hidden" name="patient_id"  value="{{ patient_data.patient_id }}">
+          <input type="hidden" name="name"         value="{{ patient_data.name }}">
+          <input type="hidden" name="age"          value="{{ patient_data.age }}">
+          <input type="hidden" name="gender"       value="{{ patient_data.gender }}">
+          <input type="hidden" name="visit_date"   value="{{ patient_data.visit_date }}">
+          <input type="hidden" name="notes"        value="{{ patient_data.notes }}">
 
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            handleFile(e.dataTransfer.files[0]);
-        });
+          <!-- Analysis Type -->
+          <div style="margin-bottom:1.75rem;">
+            <p class="form-label" style="margin-bottom:1rem;">
+              Analysis Type <span class="required-star">*</span>
+            </p>
+            <div class="analysis-options-grid">
+              <div class="analysis-opt" data-type="hypodontia" id="opt-hypodontia">
+                <input type="radio" id="hypodontia" name="condition_type" value="hypodontia" required style="display:none;">
+                <div class="opt-icon">🦴</div>
+                <h3>Hypodontia Detection</h3>
+                <p>Detect missing or underdeveloped teeth from X-ray images</p>
+                <span class="opt-format">PNG · JPG recommended</span>
+              </div>
+              <div class="analysis-opt" data-type="discoloration" id="opt-discoloration">
+                <input type="radio" id="discoloration" name="condition_type" value="discoloration" style="display:none;">
+                <div class="opt-icon">🦷</div>
+                <h3>Tooth Discoloration</h3>
+                <p>Detect and classify tooth discoloration patterns</p>
+                <span class="opt-format">Clear tooth photos recommended</span>
+              </div>
+            </div>
+          </div>
 
-        fileInput.addEventListener('change', (e) => {
-            handleFile(e.target.files[0]);
-        });
+          <!-- Upload Zone -->
+          <div style="margin-bottom:1.75rem;">
+            <p class="form-label" style="margin-bottom:1rem;">
+              Dental Image <span class="required-star">*</span>
+            </p>
+            <div class="upload-zone" id="uploadZone">
+              <div id="uploadPrompt">
+                <div class="upload-icon">📂</div>
+                <h3>Drop your dental image here</h3>
+                <p>or <span style="color:var(--accent);font-weight:600;cursor:pointer;">click to browse</span></p>
+                <p style="margin-top:.75rem;font-size:.78rem;color:var(--text-muted);">PNG · JPG · JPEG · GIF &nbsp;&middot;&nbsp; Max 10 MB</p>
+              </div>
+              <div id="imagePreview" style="display:none;">
+                <div style="position:relative;max-width:320px;margin:0 auto;">
+                  <img id="previewImg" style="width:100%;border-radius:var(--radius-md);display:block;">
+                  <button type="button" id="removeImg"
+                    style="position:absolute;top:8px;right:8px;background:var(--danger);color:#fff;border:none;
+                           border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.9rem;
+                           display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <p style="margin-top:.75rem;font-size:.82rem;color:var(--text-secondary);text-align:center;">
+                  <i class="fas fa-check-circle" style="color:var(--success);"></i>
+                  <span id="fileName"></span> &nbsp;(<span id="fileSize"></span>)
+                </p>
+              </div>
+            </div>
+            <input type="file" id="fileInput" name="dental_image" accept="image/*" required style="display:none;">
+          </div>
 
-        function handleFile(file) {
-            if (!file) return;
+          <!-- Actions -->
+          <div class="form-actions">
+            <a href="{{ url_for('patient_details') }}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <button type="submit" class="btn btn-primary" id="analyzeBtn" disabled>
+              <i class="fas fa-microscope"></i> Analyse Image
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-            // Validate file type
-            const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-            if (!validTypes.includes(file.type)) {
-                alert('Please upload a valid image file (PNG, JPG, JPEG, or GIF)');
-                return;
-            }
+  <!-- Loading Modal -->
+  <div class="upload-modal" id="loadingModal">
+    <div class="upload-modal-inner">
+      <div class="spinner-ring"></div>
+      <h2 style="font-size:1.5rem;margin-bottom:.5rem;">Analysing Image…</h2>
+      <p style="color:var(--text-secondary);">Processing your dental image with AI</p>
+      <div class="spinner-dots">
+        <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+      </div>
+    </div>
+  </div>
 
-            // Validate file size (10MB max)
-            if (file.size > 10 * 1024 * 1024) {
-                alert('File size must be less than 10MB');
-                return;
-            }
+  <script>
+    // Populate from URL params
+    const urlP = new URLSearchParams(window.location.search);
+    ['patient_id','name','age','gender','visit_date','notes'].forEach(k => {
+      const v = urlP.get(k);
+      if (v) {
+        const el = document.getElementById('disp-' + k.replace('_','-').replace('visit-date','date').replace('patient-id','id'));
+        if (el) el.textContent = v;
+        const hidden = document.querySelector(`input[name="${k}"]`);
+        if (hidden) hidden.value = v;
+      }
+    });
 
-            // Update file input
-            const dt = new DataTransfer();
-            dt.items.add(file);
-            fileInput.files = dt.files;
+    // Analysis option selection
+    document.querySelectorAll('.analysis-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.analysis-opt').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        opt.querySelector('input[type="radio"]').checked = true;
+        checkValidity();
+      });
+    });
 
-            // Preview image
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                previewImage.src = e.target.result;
-                document.getElementById('fileName').textContent = file.name;
-                document.getElementById('fileSize').textContent = formatFileSize(file.size);
-                
-                uploadPrompt.style.display = 'none';
-                imagePreview.style.display = 'block';
-                
-                checkFormValidity();
-            };
-            reader.readAsDataURL(file);
-        }
+    // File upload
+    const zone       = document.getElementById('uploadZone');
+    const fileInput  = document.getElementById('fileInput');
+    const preview    = document.getElementById('imagePreview');
+    const prompt     = document.getElementById('uploadPrompt');
+    const previewImg = document.getElementById('previewImg');
 
-        // Remove image
-        document.getElementById('removeImage').addEventListener('click', () => {
-            fileInput.value = '';
-            uploadPrompt.style.display = 'block';
-            imagePreview.style.display = 'none';
-            checkFormValidity();
-        });
+    zone.addEventListener('click', () => fileInput.click());
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
 
-        // Analysis type selection
-        document.querySelectorAll('.analysis-option').forEach(option => {
-            option.addEventListener('click', () => {
-                // Remove active class from all options
-                document.querySelectorAll('.analysis-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                
-                // Add active class to selected option
-                const card = option.querySelector('.analysis-card');
-                card.classList.add('active');
-                
-                // Check the radio button
-                const radio = option.querySelector('input[type="radio"]');
-                radio.checked = true;
-                
-                checkFormValidity();
-            });
-        });
+    function handleFile(file) {
+      if (!file) return;
+      if (!['image/png','image/jpeg','image/jpg','image/gif'].includes(file.type)) {
+        return alert('Please upload a valid image (PNG, JPG, JPEG, GIF)');
+      }
+      if (file.size > 10 * 1024 * 1024) return alert('File must be under 10MB');
+      const dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files;
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewImg.src = e.target.result;
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('fileSize').textContent = fmtSize(file.size);
+        prompt.style.display = 'none';
+        preview.style.display = 'block';
+        checkValidity();
+      };
+      reader.readAsDataURL(file);
+    }
 
-        function checkFormValidity() {
-            const analysisSelected = document.querySelector('input[name="condition_type"]:checked');
-            const imageSelected = fileInput.files.length > 0;
-            
-            analyzeBtn.disabled = !(analysisSelected && imageSelected);
-        }
+    document.getElementById('removeImg').addEventListener('click', e => {
+      e.stopPropagation();
+      fileInput.value = '';
+      preview.style.display = 'none';
+      prompt.style.display = 'block';
+      checkValidity();
+    });
 
-        // Form submission
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Show analysis modal
-            analysisModal.style.display = 'block';
-            document.getElementById('analysisImage').src = previewImage.src;
-            
-            // Submit form after showing animation
-            setTimeout(() => {
-                this.submit();
-            }, 1000);
-        });
+    function checkValidity() {
+      const ok = document.querySelector('input[name="condition_type"]:checked') && fileInput.files.length > 0;
+      document.getElementById('analyzeBtn').disabled = !ok;
+    }
 
-        // Utility functions
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-    </script>
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('loadingModal').classList.add('show');
+      setTimeout(() => this.submit(), 800);
+    });
 
-    <style>
-        .analysis-card {
-            display: block;
-            padding: 1.5rem;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .analysis-card:hover {
-            border-color: var(--dental-blue);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-soft);
-        }
-
-        .analysis-card.active {
-            border-color: var(--dental-blue);
-            background: var(--dental-light-blue);
-            box-shadow: var(--shadow-medium);
-        }
-
-        .analysis-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .analysis-card h3 {
-            color: var(--dental-blue);
-            margin-bottom: 0.5rem;
-        }
-
-        .analysis-card p {
-            color: var(--dental-dark-gray);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .recommended-format {
-            font-size: 0.8rem;
-            color: var(--dental-teal);
-            font-weight: 500;
-        }
-
-        #analysisModal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+    function fmtSize(b) {
+      if (!b) return '0 B';
+      const k = 1024, u = ['B','KB','MB','GB'], i = Math.floor(Math.log(b)/Math.log(k));
+      return (b/Math.pow(k,i)).toFixed(1) + ' ' + u[i];
+    }
+  </script>
 </body>
 </html>

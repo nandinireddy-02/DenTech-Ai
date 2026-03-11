@@ -1,214 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Details - DenTech AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Registration – DenTech AI</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🦷</svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Clean Navigation Header -->
-    <nav class="clean-nav">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <div class="brand-icon"></div>
-                <span class="brand-text">DenTech AI</span>
-            </div>
-            <div class="nav-links">
-                <a href="{{ url_for('index') }}" class="nav-link">HOME</a>
-                <a href="{{ url_for('patient_details') }}" class="nav-link active">ANALYSIS</a>
-                <a href="{{ url_for('patient_history') }}" class="nav-link">HISTORY</a>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Professional Background -->
-    <div class="professional-background"></div>
-
-    <div class="page-container">
-        <div class="professional-card form-container">
-            <!-- Header -->
-            <div style="text-align: center; margin-bottom: 2rem; border-bottom: 1px solid #e9ecef; padding-bottom: 1.5rem;">
-                <h1 style="color: var(--dental-blue); margin-bottom: 0.5rem; font-size: 1.8rem; font-weight: 600;">
-                    Patient Information
-                </h1>
-                <p style="color: var(--dental-dark-gray); font-size: 0.95rem;">
-                    Please provide patient details for analysis
-                </p>
-            </div>
-
-            <form id="patientForm">
-                <!-- Patient ID (Auto-generated) -->
-                <div class="form-group">
-                    <label class="form-label" for="patient_id">
-                        Patient ID
-                        <span style="color: var(--dental-teal); font-size: 0.9em;">(Auto-generated)</span>
-                    </label>
-                    <input type="text" class="form-control" id="patient_id" name="patient_id" 
-                           readonly style="background-color: #f8f9fa;">
-                    <button type="button" id="generateIdBtn" class="btn btn-secondary" 
-                            style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
-                        Generate New ID
-                    </button>
-                </div>
-
-                <!-- Patient Name -->
-                <div class="form-group">
-                    <label class="form-label" for="name">
-                        Patient Name <span style="color: red;">*</span>
-                    </label>
-                    <input type="text" class="form-control" id="name" name="name" 
-                           required placeholder="Enter patient's full name">
-                </div>
-
-                <!-- Age -->
-                <div class="form-group">
-                    <label class="form-label" for="age">
-                        Age <span style="color: red;">*</span>
-                    </label>
-                    <input type="number" class="form-control" id="age" name="age" 
-                           required min="1" max="120" placeholder="Enter age">
-                </div>
-
-                <!-- Gender -->
-                <div class="form-group">
-                    <label class="form-label" for="gender">
-                        Gender <span style="color: red;">*</span>
-                    </label>
-                    <select class="form-control form-select" id="gender" name="gender" required>
-                        <option value="">Select gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                        <option value="Prefer not to say">Prefer not to say</option>
-                    </select>
-                </div>
-
-                <!-- Visit Date -->
-                <div class="form-group">
-                    <label class="form-label" for="visit_date">
-                        Visit Date <span style="color: red;">*</span>
-                    </label>
-                    <input type="date" class="form-control" id="visit_date" name="visit_date" required>
-                </div>
-
-                <!-- Notes (Optional) -->
-                <div class="form-group">
-                    <label class="form-label" for="notes">
-                        Notes <span style="color: var(--dental-dark-gray); font-weight: normal;">(Optional)</span>
-                    </label>
-                    <textarea class="form-control" id="notes" name="notes" rows="4" 
-                              placeholder="Additional notes about the patient or visit..."></textarea>
-                </div>
-
-                <!-- Form Actions -->
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <a href="{{ url_for('index') }}" class="btn btn-secondary" style="flex: 1;">
-                        ← Back to Home
-                    </a>
-                    <button type="submit" class="btn btn-primary" style="flex: 2;">
-                        Continue to Image Upload →
-                    </button>
-                </div>
-            </form>
-
-            <!-- Form Validation Info -->
-            <div class="disclaimer" style="margin-top: 2rem;">
-                <strong>Information Security:</strong> All patient information is stored securely and 
-                in compliance with healthcare data protection standards. Patient privacy is our top priority.
-            </div>
-        </div>
+  <nav class="site-nav scrolled" id="siteNav">
+    <div class="nav-inner">
+      <a href="{{ url_for('index') }}" class="nav-brand">
+        <div class="nav-brand-icon">🦷</div>
+        <span class="nav-brand-text">DenTech <span>AI</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="{{ url_for('index') }}"           class="nav-link">Home</a>
+        <a href="{{ url_for('patient_details') }}" class="nav-link active">Analysis</a>
+        <a href="{{ url_for('patient_history') }}" class="nav-link">History</a>
+      </div>
     </div>
+  </nav>
 
-    <script>
-        // Auto-generate patient ID on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            generatePatientId();
-            
-            // Set today's date as default visit date
-            const today = new Date();
-            const todayString = today.toISOString().split('T')[0];
-            document.getElementById('visit_date').value = todayString;
-        });
+  <div class="form-page">
+    <div class="container">
 
-        // Generate new patient ID
-        document.getElementById('generateIdBtn').addEventListener('click', generatePatientId);
+      <!-- Header -->
+      <div class="form-header-block anim-fade-up anim-delay-1">
+        <span class="section-eyebrow"><i class="fas fa-user-plus"></i> &nbsp;Step 1 of 3</span>
+        <h1 class="section-title" style="font-size:2.2rem;">Patient Registration</h1>
+        <p class="section-sub" style="font-size:.95rem;">Quick &amp; secure patient information entry</p>
+        <!-- Steps -->
+        <div class="steps" style="justify-content:center;margin-top:1.5rem;">
+          <div class="step-item active">
+            <div class="step-dot">1</div>
+            <span style="display:none;">Details</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-dot">2</div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item">
+            <div class="step-dot">3</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:3.5rem;margin-top:.5rem;font-size:.75rem;color:var(--text-muted);">
+          <span style="color:var(--accent);font-weight:600;">Details</span>
+          <span>Upload</span>
+          <span>Results</span>
+        </div>
+      </div>
 
-        async function generatePatientId() {
-            try {
-                const response = await fetch('/api/generate-patient-id');
-                const data = await response.json();
-                document.getElementById('patient_id').value = data.patient_id;
-            } catch (error) {
-                console.error('Error generating patient ID:', error);
-                // Fallback to client-side generation
-                const timestamp = new Date().toISOString().replace(/[-:T]/g, '').substring(0, 14);
-                const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                document.getElementById('patient_id').value = `DT${timestamp}${random}`;
-            }
-        }
+      <!-- Form Card -->
+      <div class="form-card anim-fade-up anim-delay-2">
+        <form id="patientForm" autocomplete="off">
 
-        // Form submission handler
-        document.getElementById('patientForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validate form
-            if (!this.checkValidity()) {
-                this.reportValidity();
-                return;
-            }
+          <!-- Patient ID -->
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label class="form-label">
+              Patient ID <span class="auto-label">Auto</span>
+            </label>
+            <div class="input-btn-row">
+              <input type="text" class="form-input" id="patient_id" name="patient_id" readonly placeholder="Generating…">
+              <button type="button" id="generateIdBtn" class="btn btn-outline btn-sm">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+            </div>
+          </div>
 
-            // Collect form data
-            const formData = new FormData(this);
-            const params = new URLSearchParams();
-            
-            for (let [key, value] of formData.entries()) {
-                params.append(key, value);
-            }
+          <!-- Name + Age -->
+          <div class="form-grid-2" style="margin-bottom:1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="required-star">*</span></label>
+              <input type="text" class="form-input" id="name" name="name" required placeholder="Enter patient name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age <span class="required-star">*</span></label>
+              <input type="number" class="form-input" id="age" name="age" required min="1" max="120" placeholder="Years">
+            </div>
+          </div>
 
-            // Redirect to upload page with patient data
-            window.location.href = '/upload?' + params.toString();
-        });
+          <!-- Gender + Visit Date -->
+          <div class="form-grid-2" style="margin-bottom:1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Gender <span class="required-star">*</span></label>
+              <select class="form-input form-select" id="gender" name="gender" required>
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Visit Date <span class="required-star">*</span></label>
+              <input type="date" class="form-input" id="visit_date" name="visit_date" required>
+            </div>
+          </div>
 
-        // Real-time form validation feedback
-        const requiredFields = ['name', 'age', 'gender', 'visit_date'];
-        
-        requiredFields.forEach(fieldName => {
-            const field = document.getElementById(fieldName);
-            field.addEventListener('input', function() {
-                if (this.value.trim()) {
-                    this.style.borderColor = 'var(--dental-success)';
-                } else {
-                    this.style.borderColor = '#e9ecef';
-                }
-            });
-        });
+          <!-- Notes -->
+          <div class="form-group" style="margin-bottom:1.25rem;">
+            <label class="form-label">Additional Notes <span style="color:var(--text-muted);font-weight:400;">(Optional)</span></label>
+            <textarea class="form-input form-textarea" id="notes" name="notes" rows="3" placeholder="Any additional information…"></textarea>
+          </div>
 
-        // Age validation
-        document.getElementById('age').addEventListener('input', function() {
-            const age = parseInt(this.value);
-            if (age < 1 || age > 120) {
-                this.style.borderColor = 'var(--dental-danger)';
-            } else if (this.value.trim()) {
-                this.style.borderColor = 'var(--dental-success)';
-            }
-        });
+          <!-- Actions -->
+          <div class="form-actions">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              Continue <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </form>
 
-        // Enhanced form interactions
-        const formCard = document.querySelector('.glass-card');
-        
-        // Add focus effects to form fields
-        document.querySelectorAll('.form-control').forEach(field => {
-            field.addEventListener('focus', function() {
-                this.parentNode.style.transform = 'translateY(-2px)';
-                this.parentNode.style.transition = 'all 0.3s ease';
-            });
-            
-            field.addEventListener('blur', function() {
-                this.parentNode.style.transform = 'translateY(0)';
-            });
-        });
-    </script>
+        <p class="privacy-note">
+          <i class="fas fa-lock" style="color:var(--accent);"></i>
+          Your data is encrypted and stored securely
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Set today's date
+    document.getElementById('visit_date').value = new Date().toISOString().split('T')[0];
+
+    // Generate patient ID
+    async function generateId() {
+      try {
+        const r = await fetch('/api/generate-patient-id');
+        const d = await r.json();
+        document.getElementById('patient_id').value = d.patient_id;
+      } catch {
+        const ts = new Date().toISOString().replace(/[-:T]/g,'').substring(0,14);
+        document.getElementById('patient_id').value = 'DT' + ts + Math.floor(Math.random()*9000+1000);
+      }
+    }
+    generateId();
+
+    document.getElementById('generateIdBtn').addEventListener('click', async function() {
+      this.disabled = true;
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      await generateId();
+      this.disabled = false;
+      this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+    });
+
+    // Form submit
+    document.getElementById('patientForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!this.checkValidity()) { this.reportValidity(); return; }
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing…';
+      setTimeout(() => {
+        const params = new URLSearchParams(new FormData(this));
+        window.location.href = '/upload?' + params.toString();
+      }, 800);
+    });
+
+    // Real-time validation feedback
+    ['name','age','gender','visit_date'].forEach(name => {
+      const el = document.getElementById(name);
+      el.addEventListener('blur', () => {
+        el.style.borderColor = el.checkValidity() && el.value.trim()
+          ? 'var(--success)' : '';
+      });
+    });
+  </script>
 </body>
 </html>
