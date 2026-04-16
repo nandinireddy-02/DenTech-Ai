@@ -2,9 +2,8 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, f
 import os
 from werkzeug.utils import secure_filename
 from datetime import datetime
-import uuid
-import random
 from database import db
+from predict import predict_condition, ModelNotAvailableError
 
 app = Flask(__name__)
 app.secret_key = 'dentech_ai_secret_key_2026'
@@ -23,31 +22,9 @@ def generate_patient_id():
     serial_number = db.get_next_patient_number()
     return f"DT{timestamp}{serial_number}"
 
-def simulate_ai_analysis(image_path, condition_type):
-    """
-    Simulate AI analysis for dental conditions
-    In production, this would call actual AI models
-    """
-    import time
-    time.sleep(2)  # Simulate processing time
-    
-    # Simulate random but realistic results
-    if condition_type == 'hypodontia':
-        conditions = [
-            ('No Hypodontia Detected', 92.5, 'Normal tooth development pattern observed. All expected tooth structures are present in the X-ray image.'),
-            ('Mild Hypodontia', 78.3, 'Missing 1-2 teeth detected. This is a common developmental variation that may require orthodontic consultation.'),
-            ('Moderate Hypodontia', 85.1, 'Missing 3-5 teeth identified. Comprehensive treatment planning recommended with prosthodontic evaluation.')
-        ]
-    else:  # tooth_discoloration
-        conditions = [
-            ('No Significant Discoloration', 89.7, 'Normal tooth coloration within healthy parameters. No immediate treatment required.'),
-            ('Mild Surface Staining', 76.4, 'Surface-level discoloration detected. Professional cleaning and whitening may be beneficial.'),
-            ('Moderate Discoloration', 82.1, 'Noticeable discoloration present. Consider professional whitening treatment or cosmetic consultation.'),
-            ('Severe Discoloration', 91.3, 'Significant discoloration detected. Comprehensive evaluation recommended to determine underlying cause.')
-        ]
-    
-    result, confidence, explanation = random.choice(conditions)
-    return result, confidence, explanation
+def analyze_image(image_path, condition_type):
+    """Run real model inference for the uploaded image."""
+    return predict_condition(image_path, condition_type)
 
 @app.route('/')
 def index():
@@ -96,10 +73,16 @@ def upload_image():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             file.save(file_path)
             
-            # Simulate AI analysis
-            result, confidence, explanation = simulate_ai_analysis(
-                file_path, patient_data['condition_type']
-            )
+            try:
+                result, confidence, explanation = analyze_image(
+                    file_path, patient_data['condition_type']
+                )
+            except ModelNotAvailableError as exc:
+                flash(str(exc))
+                return redirect(request.url)
+            except Exception as exc:
+                flash(f'Model inference failed: {exc}')
+                return redirect(request.url)
             
             # Save to database
             db_data = (
